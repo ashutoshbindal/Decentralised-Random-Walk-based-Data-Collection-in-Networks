@@ -334,7 +334,7 @@ graph is created using buildKd and queryKd. radius is the connectivity radius of
 void createGraph(Node *vertex,int n)
 {
 
-	float radius=0.18;
+	float radius=0.5;
 	Kdnode *kdtree= buildKd(vertex,n,true);
 	for(int i=0;i<n;i++)
 	{
@@ -899,8 +899,11 @@ int main(int argc, char *argv[])
                 for(int i=1;i<=91;i++)
                 {
                     src_nodes=-1;
+                    rate=0.001;
+                    bool prev_rate = false;
                     for(int j=1;j<=91;j++)
                     {
+                    	prev_rate = false;
                         int temp=src_frac*(NODES-1);
                         if(temp==src_nodes)
                             continue;
@@ -910,7 +913,7 @@ int main(int argc, char *argv[])
                         //loop which change in rate as per the return value of simulation
                         double left_lim=-0.1;
                         double right_lim=-0.1;
-                        rate=0.001;
+                        //rate=0.001;
                         while(true)
                         {
                             srand(10);
@@ -963,6 +966,8 @@ int main(int argc, char *argv[])
                                     {
                                         //write output and break
                                         dout<<NODES<<" "<<src_frac*(NODES-1)<<" "<<prob<<" "<<left_lim<<endl;
+                                        rate = left_lim;
+                                        prev_rate = true;
                                         cout<<NODES<<" "<<src_frac*(NODES-1)<<" "<<prob<<" "<<left_lim<<endl;
                                         cout<<"0"<<endl;
                                         break;
@@ -1015,6 +1020,9 @@ int main(int argc, char *argv[])
                                     {
                                         //write output and break
                                         dout<<NODES<<" "<<src_frac*(NODES-1)<<" "<<prob<<" "<<left_lim<<endl;
+                                        rate = left_lim;
+                                        prev_rate = true;
+
                                         cout<<NODES<<" "<<src_frac*(NODES-1)<<" "<<prob<<" "<<left_lim<<endl;
                                         cout<<"1"<<endl;
                                         break;
@@ -1024,12 +1032,17 @@ int main(int argc, char *argv[])
                             if(rate<0.00001)
                             {
                                 dout<<NODES<<" "<<src_frac*(NODES-1)<<" "<<prob<<" "<<"less than 0.00001";
+
                                 cout<<"2"<<endl;
                                 break;
                             }
                         }
 
                         src_frac+=0.01;
+                    }
+                    if(!prev_rate)
+                    {
+                    	rate = 0.001;
                     }
                     prob+=0.01;
                 }
